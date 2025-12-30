@@ -199,6 +199,31 @@ contract SupplyChain {
         return "Unknown";
     }
 
+    // Get a full history of medicine, i.e. filter transactions with the medicine ID provided.
+    function getFullMedicineHistory(uint256 _medicineID) public view returns (Transaction[] memory) {
+        require(_medicineID > 0 && _medicineID <= medicineCounter, "Invalid medicine ID");
+        
+        uint count = 0;
+        for (uint i = 0; i < transactions.length; i++) {
+            if (transactions[i].medicineId == _medicineID) {
+                count++;
+            }
+        }
+
+        // Create a new memory array to store the filtered transactions
+        Transaction[] memory medicineTransactions = new Transaction[](count);
+        uint index = 0;
+
+        // Populate the filtered array
+        for (uint i = 0; i < transactions.length; i++) {
+            if (transactions[i].medicineId == _medicineID) {
+                medicineTransactions[index++] = transactions[i];
+            }
+        }
+
+        return medicineTransactions;
+    }
+
     // Create a shipment
     function createShipment(uint256 _medicineID, address _receiver, string memory _trackingId) public {
         require(medicines[_medicineID].distributor == msg.sender, "Only distributor can create shipment");

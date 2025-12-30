@@ -3,6 +3,7 @@ const {
   addMedicine,
   getAllMedicines,
   getMedicineHistory,
+  getFullMedicineHistory,
   getMedicineStage,
 } = require("../controllers/medicineController");
 
@@ -11,6 +12,7 @@ const router = express.Router();
 router.post("/add", addMedicine);
 router.get("/", getAllMedicines);
 router.get("/:id/history", getMedicineHistory);
+router.get("/:id/full-history", getFullMedicineHistory);
 router.get("/:id/stage", getMedicineStage);
 
 module.exports = router;

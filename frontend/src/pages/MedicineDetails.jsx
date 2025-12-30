@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getMedicines, getMedicineStage, getMedicineHistory } from "../services/api";
+import { getMedicines, getMedicineStage, getMedicineHistory, getFullMedicineHistory } from "../services/api";
 import { FileSearch, Clock, Tag, Search, History, ArrowRight, Loader, AlertCircle, CheckCircle } from "lucide-react";
 
 const Medicine = () => {
@@ -77,6 +77,31 @@ const Medicine = () => {
     }
   };
 
+  const handleGetFullHistory = async () => {
+    if (!medicineId) {
+      showNotification("error", "Please enter a Medicine ID");
+      return;
+    }
+
+    try {
+      setHistoryLoading(true);
+      const response = await getFullMedicineHistory(medicineId);
+
+      if (response.data.length === 0) {
+        showNotification("info", "No transaction history found for this medicine");
+        setMedicineHistory([]);
+        return;
+      }
+
+      setMedicineHistory(response.data);
+      showNotification("success", "Full medicine history retrieved successfully");
+    } catch (error) {
+      showNotification("error", "Error fetching full medicine history");
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
   // Function to get stage badge color
   const getStageBadge = (stage) => {
     const stageColors = {
@@ -151,6 +176,14 @@ const Medicine = () => {
                   onChange={(e) => setMedicineId(e.target.value)} 
                 />
               </div>
+              <button 
+                onClick={handleGetFullHistory} 
+                className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:shadow-blue-50 transition-all"
+                disabled={historyLoading}
+              >
+                {historyLoading ? <Loader className="animate-spin h-5 w-5 mr-2" /> : <History className="h-5 w-5 mr-2" />}
+                Get Full History
+              </button>
               <button 
                 onClick={handleGetHistory} 
                 className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:shadow-blue-50 transition-all"
