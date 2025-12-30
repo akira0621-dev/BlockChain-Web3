@@ -105,10 +105,6 @@ exports.getMedicineStage = async (req, res) => {
   }
 };
 
-BigInt.prototype.toJSON = function () {
-  return JSON.rawJSON(this.toString());
-};
-
 exports.getFullMedicineHistory = async (req, res) => {
   try {
     const medicineId = req.params.id;
